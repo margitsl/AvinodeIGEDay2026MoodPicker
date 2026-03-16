@@ -1,339 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mood Emoji Picker</title>
-  <style>
-    :root {
-      --bg: #ff8c00;
-      --card: rgba(255, 255, 255, 0.08);
-      --card2: rgba(255, 255, 255, 0.12);
-      --text: rgba(255, 255, 255, 0.92);
-      --muted: rgba(255, 255, 255, 0.65);
-      --ring: rgba(255, 255, 255, 0.25);
-      --shadow: 0 20px 60px rgba(0,0,0,0.35);
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      color: var(--text);
-      background:
-              radial-gradient(1200px 600px at 15% 10%, rgba(124, 92, 255, 0.35), transparent 60%),
-              radial-gradient(900px 600px at 85% 30%, rgba(0, 208, 255, 0.25), transparent 55%),
-              radial-gradient(700px 500px at 50% 90%, rgba(255, 130, 160, 0.18), transparent 60%),
-              var(--bg);
-      padding: 24px;
-    }
-
-    .app {
-      width: min(860px, 100%);
-      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.06));
-      border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    header {
-      padding: 20px 22px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      display: flex;
-      gap: 14px;
-      align-items: baseline;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: 0.2px;
-    }
-
-    header p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .content {
-      padding: 18px 22px 22px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    @media (max-width: 680px) {
-      .row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (max-width: 430px) {
-      .row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    .emoji-btn {
-      position: relative;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: linear-gradient(180deg, var(--card2), rgba(255,255,255,0.06));
-      border-radius: 18px;
-      padding: 14px 12px 12px;
-      cursor: pointer;
-      color: var(--text);
-      display: grid;
-      gap: 10px;
-      place-items: center;
-      min-height: 118px;
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
-      outline: none;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .emoji-btn:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255,255,255,0.22);
-    }
-    .emoji-btn:active {
-      transform: translateY(0px) scale(0.99);
-    }
-    .emoji-btn:focus-visible {
-      box-shadow: 0 0 0 4px var(--ring);
-    }
-
-    .emoji {
-      font-size: 40px;
-      line-height: 1;
-      transform-origin: center;
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.25));
-    }
-
-    .label {
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.2px;
-    }
-
-    .count {
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.16);
-    }
-
-    /* Click animation (emoji pop) */
-    .emoji-btn.pop .emoji {
-      animation: pop 360ms cubic-bezier(.2, 1.2, .2, 1) both;
-    }
-
-    @keyframes pop {
-      0%   { transform: scale(1); }
-      35%  { transform: scale(1.35) rotate(-8deg); }
-      70%  { transform: scale(0.95) rotate(6deg); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
-
-    /* Ripple effect */
-    .ripple {
-      position: absolute;
-      border-radius: 999px;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      width: 10px;
-      height: 10px;
-      background: rgba(255,255,255,0.35);
-      animation: ripple 520ms ease-out forwards;
-      filter: blur(0px);
-    }
-
-    @keyframes ripple {
-      0%   { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(18); }
-    }
-
-    .footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      padding: 14px 22px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      padding: 8px 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
-    }
-    .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.24); }
-    .btn:active { transform: translateY(0px); }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main class="app" aria-label="Mood Emoji Picker">
-  <header>
+
+<main class="app">
+  <header class="top-area">
     <div>
-      <h1>Mood check-in</h1>
-      <p>Click an emoji to log your mood. Counts update instantly.</p>
+      <h1>Mood Check-In</h1>
+      <p>Click an emoji to log how you feel.</p>
     </div>
-    <p id="total" aria-live="polite">Total clicks: 0</p>
+
+    <p id="totalText">Total clicks: 0</p>
   </header>
 
-  <section class="content">
-    <div class="row" id="emojiRow">
-      <button class="emoji-btn" type="button" data-key="awful" aria-label="Awful mood">
-        <div class="emoji" aria-hidden="true">😞</div>
-        <div class="label">Awful</div>
-        <div class="count" data-count>0</div>
+  <section class="mood-section">
+    <h2 class="hidden-title">Mood Buttons</h2>
+
+    <div class="button-grid">
+
+      <button class="mood-button" type="button" data-key="sad" aria-label="Sad mood">
+        <span class="emoji">😞</span>
+        <span class="mood-name">Sad</span>
+        <span class="count-box" data-count>0</span>
       </button>
 
-      <button class="emoji-btn" type="button" data-key="meh" aria-label="Meh mood">
-        <div class="emoji" aria-hidden="true">😐</div>
-        <div class="label">Okay</div>
-        <div class="count" data-count>0</div>
+      <button class="mood-button" type="button" data-key="okay" aria-label="Okay mood">
+        <span class="emoji">😐</span>
+        <span class="mood-name">Okay</span>
+        <span class="count-box" data-count>0</span>
       </button>
 
-      <button class="emoji-btn" type="button" data-key="good" aria-label="Good mood">
-        <div class="emoji" aria-hidden="true">😄</div>
-        <div class="label">Good</div>
-        <div class="count" data-count>0</div>
+      <button class="mood-button" type="button" data-key="good" aria-label="Good mood">
+        <span class="emoji">😄</span>
+        <span class="mood-name">Good</span>
+        <span class="count-box" data-count>0</span>
       </button>
 
-      <button class="emoji-btn" type="button" data-key="amazing" aria-label="Amazing mood">
-        <div class="emoji" aria-hidden="true">🤩</div>
-        <div class="label">Amazing</div>
-        <div class="count" data-count>0</div>
+      <button class="mood-button" type="button" data-key="great" aria-label="Great mood">
+        <span class="emoji">🤩</span>
+        <span class="mood-name">Great</span>
+        <span class="count-box" data-count>0</span>
       </button>
 
-      <button class="emoji-btn" type="button" data-key="party" aria-label="Party mood" disabled="disabled">
-        <div class="emoji">🥳</div>
-        <div class="label">Party Mood!</div>
-        <div class="count" data-count>0</div>
+      <button class="mood-button" type="button" data-key="partyy" aria-label="Party mood">
+        <span class="emoji">🥳</span>
+        <span class="mood-name">Party</span>
+        <span class="count-box" data-count>0</span>
       </button>
+
     </div>
   </section>
 
-  <div class="footer">
-    <div class="actions">
-      <button class="btn" id="resetBtn" type="button">Reset counts</button>
-    </div>
-  </div>
+  <footer class="bottom-area">
+    <button class="reset-button" id="resetButton" type="button">Reset counts</button>
+  </footer>
 </main>
 
-<script>
-  (() => {
-    const STORAGE_KEY = "mood_emoji_counts_v1";
-    const buttons = Array.from(document.querySelectorAll(".emoji-btn"));
-    const totalEl = document.getElementById("total");
-    const resetBtn = document.getElementById("resetBtn");
-
-    const defaultCounts = {
-      awful: 0,
-      meh: 0,
-      okay: 0,
-      good: 0,
-      amazing: 0
-    };
-
-    function loadCounts() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { ...defaultCounts };
-        const parsed = JSON.parse(raw);
-        return { ...defaultCounts, ...parsed };
-      } catch {
-        return { ...defaultCounts };
-      }
-    }
-
-    function saveCounts(counts) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(counts));
-    }
-
-    function totalClicks(counts) {
-      return Object.values(counts).reduce((a, b) => a + b, 0);
-    }
-
-    function render(counts) {
-      for (const btn of buttons) {
-        const key = btn.dataset.key;
-        const countEl = btn.querySelector("[data-count]");
-        countEl.textContent = counts[key] ?? 0;
-      }
-      totalEl.textContent = `Total clicks: ${totalClicks(counts)}`;
-    }
-
-    function addRipple(btn, clientX, clientY) {
-      const rect = btn.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-
-      const ripple = document.createElement("span");
-      ripple.className = "ripple";
-      ripple.style.left = `${x}px`;
-      ripple.style.top = `${y}px`;
-      btn.appendChild(ripple);
-
-      ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
-    }
-
-    let counts = loadCounts();
-    render(counts);
-
-    for (const btn of buttons) {
-      btn.addEventListener("click", (e) => {
-        const key = btn.dataset.key;
-
-        // increment + persist
-        counts[key] = (counts[key] ?? 0) + 1;
-        saveCounts(counts);
-        render(counts);
-
-        // animations
-        btn.classList.remove("pop");
-        // restart animation reliably
-        void btn.offsetWidth;
-        btn.classList.add("pop");
-
-        // ripple at click location (fallback to center if keyboard click)
-        const x = e.clientX || (btn.getBoundingClientRect().left + btn.offsetWidth / 2);
-        const y = e.clientY || (btn.getBoundingClientRect().top + btn.offsetHeight / 2);
-        addRipple(btn, x, y);
-      });
-    }
-
-    resetBtn.addEventListener("click", () => {
-      counts = { ...defaultCounts };
-      saveCounts(counts);
-      render(counts);
-    });
-  })();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
